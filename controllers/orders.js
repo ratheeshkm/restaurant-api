@@ -77,10 +77,11 @@ module.exports = {
 	},
 	setPayment: async (req, res) => {
 		let result = "", status = "";
-		const { paymentId, paymentType, paymentStatus, name, phoneNumber, currentTable, orderId } = req.body;
+		const { paymentId, paymentType, paymentStatus, name, phoneNumber, currentTable, orderId, paymentAmount } = req.body;
 		try {
 			const client = await pool.connect();
-			let updateQuery = `UPDATE payment SET type='${paymentType}', status='${paymentStatus}', name='${name}', phonenumber='${phoneNumber}'  WHERE id=${paymentId}`;
+			let updateQuery = `UPDATE payment SET type='${paymentType}', status='${paymentStatus}', name='${name}', 
+			phonenumber='${phoneNumber}', amount='${paymentAmount}'  WHERE id=${paymentId}`;
 			result = await client.query(updateQuery);
 			if (currentTable) {
 				let updateTableQuery = `UPDATE tables SET status='Available', orderid='' WHERE id=${currentTable}`;
@@ -137,6 +138,7 @@ module.exports = {
 			let query = `INSERT INTO orderitems (orderid, categoryid, subcategoryid, inventoryid, name, image, description, price, quantity, tableid) 
 			VALUES('${orderid}', '${categoryid}', '${subcategoryid}', '${inventoryid}', '${name}', '${image}', '${description}', '${price}',
 			 '${quantity}', ${tableid}) RETURNING id`;
+			console.log("query-->", query)
 			const result = await client.query(query);
 			const updateQuery = `UPDATE "order" SET status='InProgress' WHERE orderid='${orderid}'`;
 			const updateResult = await client.query(updateQuery);
@@ -228,5 +230,21 @@ module.exports = {
 			result.error = error;
 			res.status(404).send(result);
 		}
-	}
+	},
+	getCompletedOrders: async (req, res) => {
+		let result = "", status = "";
+		try {
+			const client = await pool.connect();
+			const result = await client.query(`SELECT "order".orderid as orderId, ordercategory, "order".status, payment.type as paymentType, 
+			payment.phonenumber, payment.amount as paymentAmount
+			FROM "order"
+			JOIN payment ON "order".orderid = payment.orderid
+			WHERE "order".status = 'Completed' AND payment.status = 'Completed' ORDER BY "order".id DESC`);
+			const results = { 'results': (result) ? result.rows : null };
+			client.release();
+			res.status(200).send(results);
+		} catch (err) {
+			res.status(404).send(err);
+		}
+	},
 }

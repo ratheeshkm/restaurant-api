@@ -51,10 +51,9 @@ module.exports = {
 		}
 	},
 	deleteInventory: async (req, res) => {
-		console.log("Test");
 		let result, status = "";
 		const ids = req.body.map(item => `'${item}'`).join(",");
-		let deleteQuery = `DELETE FROM products WHERE id IN (${ids})`;
+		let deleteQuery = `DELETE FROM inventory WHERE id IN (${ids})`;
 		try {
 			const client = await pool.connect();
 			result = await client.query(deleteQuery);

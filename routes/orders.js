@@ -22,4 +22,6 @@ module.exports = (router) => {
 		.post(controller.updateOrderitem);
 	router.route('/delete-order-item')
 		.post(controller.deletOrderitem);
+	router.route('/get-completed-orders')
+		.get(controller.getCompletedOrders)
 }

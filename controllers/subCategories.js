@@ -49,7 +49,7 @@ module.exports = {
 	deleteSubCategories: async (req, res) => {
 		let result, status = "";
 		const ids = req.body.map(item => `'${item}'`).join(",");
-		let deleteQuery = `DELETE FROM categories WHERE id IN (${ids})`;
+		let deleteQuery = `DELETE FROM subcategories WHERE id IN (${ids})`;
 		try {
 			const client = await pool.connect();
 			result = await client.query(deleteQuery);
