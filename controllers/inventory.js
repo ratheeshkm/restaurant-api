@@ -23,7 +23,8 @@ module.exports = {
 		});
 		const { name, description, price } = req.body;
 		let insertQuery = `INSERT INTO inventory(name, image, description, price, quantity, status)
-			VALUES ('${name}', '${"uploads/"+fileName}', '${description}', ${price}, ${quantity}, 'Active');`;
+			VALUES ('${name}', '${"uploads/" + fileName}', '${description}', ${price}, ${quantity}, 'Active');`;
+		console.log(insertQuery)
 		try {
 			const client = await pool.connect();
 			result = await client.query(insertQuery);

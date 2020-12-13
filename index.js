@@ -22,10 +22,12 @@ app.use(function (req, res, next) {
 
 app.use(express.static(dir));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({
-	extended: true
+	extended: true,
+	parameterLimit:500000
 }));
+
 
 //app.set('view engine', 'ejs');
 const routes = require('./routes/index');

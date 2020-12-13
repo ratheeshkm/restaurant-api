@@ -155,7 +155,7 @@ module.exports = {
 	},
 	updateOrderitem: async (req, res) => {
 		let result = "", status = "";
-		console.log("req.body--->", req.body)
+		//console.log("req.body--->", req.body)
 		let { data, itemId } = req.body;
 		let { categoryid, description, image, inventoryid, name, orderid, price, quantity, subcategoryid, tableid } = data;
 		try {
@@ -164,6 +164,7 @@ module.exports = {
 			SET categoryid='${categoryid}', subcategoryid='${subcategoryid}', inventoryid='${inventoryid}', name='${name}', image='${image}', 
 			description='${description}', price='${price}', quantity='${quantity}', tableid='${tableid}', orderid='${orderid}'
 			WHERE id= '${itemId}'`;
+			console.log(query);
 			const result = await client.query(query);
 			const results = { 'results': (result) ? result.rows : null };
 			client.release();
